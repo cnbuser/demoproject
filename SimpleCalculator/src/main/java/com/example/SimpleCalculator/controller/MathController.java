@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class MathController {
+	
+	////
 
 	@GetMapping("/checkapplication")
 	public String saveBook() {
