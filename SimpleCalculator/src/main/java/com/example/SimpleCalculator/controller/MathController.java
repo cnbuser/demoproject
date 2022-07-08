@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.SimpleCalculator.bean.MathExpressionRequest;
 import com.example.SimpleCalculator.dao.MathExpressionHoldingRepository;
+import com.example.SimpleCalculator.serviceimpl.ExpressionCalculator;
 import com.fathzer.soft.javaluator.DoubleEvaluator;
 
 @RestController
@@ -42,6 +43,17 @@ public class MathController {
 		String exp = String.valueOf(formula);
 		DoubleEvaluator eval = new DoubleEvaluator();
 		Double result = eval.evaluate(exp);
+		MathExpressionRequest request = new MathExpressionRequest();
+		request.setEvaluated_expression(exp + " = " + result);
+		repo.save(request);
+		return "result of the calculation :" + result;
+	}
+
+	@GetMapping("/calculatenewway")
+	public String doCalculateMathexpressionbyStack(@RequestParam(value = "formula", defaultValue = "") String formula) {
+		String exp = String.valueOf(formula);
+		Double result = ExpressionCalculator.calvalueofExpression(exp);
+
 		MathExpressionRequest request = new MathExpressionRequest();
 		request.setEvaluated_expression(exp + " = " + result);
 		repo.save(request);
@@ -111,15 +123,14 @@ public class MathController {
 			request.setEvaluated_expression(a + "/" + b + "=" + a / b);
 			resultstatus = "done";
 		} else {
-			if(a==0 && b==0) {
-			resultstatus = "failed";
-			request.setEvaluated_expression(0 + "/" + 0 + "=" + "ERROR");
-			}
-			else {
+			if (a == 0 && b == 0) {
+				resultstatus = "failed";
+				request.setEvaluated_expression(0 + "/" + 0 + "=" + "ERROR");
+			} else {
 				resultstatus = "done";
-				request.setEvaluated_expression(a + "/" + b + "=" + a/b);
+				request.setEvaluated_expression(a + "/" + b + "=" + a / b);
 				c = a / b;
-				
+
 			}
 		}
 		repo.save(request);
